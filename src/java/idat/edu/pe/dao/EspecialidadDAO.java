@@ -23,7 +23,7 @@ public class EspecialidadDAO implements IEspecialidadDAO{
 
     @Override
     public List<Especialidad> ListarEspecialidad() {
-List<Especialidad> lista = new ArrayList<>();
+        List<Especialidad> lista = new ArrayList<>();
             BDConnection objCon = new BDConnection();            
             Connection con = objCon.EstablecerConexion();
             try{
