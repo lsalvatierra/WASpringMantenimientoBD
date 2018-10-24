@@ -17,6 +17,9 @@ public class Alumno {
     private String Procedencia;
     private String NomEspecialidad;
 
+    public Alumno() {
+    }
+
     public String getNomEspecialidad() {
         return NomEspecialidad;
     }

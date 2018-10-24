@@ -34,10 +34,9 @@
                     $("#ddlEspecialidad").val($(this).attr("data-idEspecialidad"));
                     $('#modalAlumno').modal('show');                    
                 });
-                
                 $("#btnRegistrarDatos").on("click", function(){
                     if($("#txtCodigo").val() === ""){
-                        alert("agregar");
+                        //alert("agregar");
                         $.ajax({                        
                             type: 'post',
                             contentType: "application/json",
@@ -48,13 +47,33 @@
                                 IdEspecialidad: $("#ddlEspecialidad").val(),
                                 Procedencia: $("#ddlProcedencia").val()
                             }),
-                            async: false,
-                            cache: false,
-                            dataType: 'json',
                             success: function (data, textStatus, jqXHR) {
                                 if(data){
                                     alert("Se registró correctamente.");
-                                    //ListarAlumnos();
+                                    ListarAlumnos();
+                                }else{
+                                    alert("Ocurrio un error en la base de datos.");
+                                }
+                            }
+                        });
+                    }
+                    else{
+                        alert("modificar");
+                        $.ajax({                        
+                            type: 'post',
+                            contentType: "application/json",
+                            url: '/WAMantenimientoBD/ModificarAlumno',
+                            data: JSON.stringify({ 
+                                IdAlumno: $("#txtCodigo").val(),
+                                ApeAlumno: $("#txtApellido").val(),
+                                NomAlumno: $("#txtNombre").val(),
+                                IdEspecialidad: $("#ddlEspecialidad").val(),
+                                Procedencia: $("#ddlProcedencia").val()
+                            }),
+                            success: function (data, textStatus, jqXHR) {
+                                if(data){
+                                    alert("Se actualizó correctamente.");
+                                    ListarAlumnos();
                                 }else{
                                     alert("Ocurrio un error en la base de datos.");
                                 }
@@ -63,19 +82,19 @@
                     }
                     $('#modalAlumno').modal('hide');
                 });
-                
                 $(".btnEliminar").live("click", function(){
                     //alert($(this).attr("data-idAlumno"));
                     $.ajax({                        
                             type: 'post',
                             contentType: "application/json",
                             url: '/WAMantenimientoBD/EliminarAlumno',
-                            data: $(this).attr("data-idAlumno"),
-                            dataType: 'json',
+                            data: JSON.stringify({
+                             IdAlumno: $(this).attr("data-idAlumno")   
+                            }),
                             success: function (data, textStatus, jqXHR) {
                                 if(data){
                                     alert("Se eliminó correctamente.");
-                                    //ListarAlumnos();
+                                    ListarAlumnos();
                                 }else{
                                     alert("Ocurrio un error en la base de datos.");
                                 }
@@ -83,6 +102,36 @@
                         });
                     });
             });
+            function ListarAlumnos(){
+                $.ajax({                        
+                   type: 'get',                 
+                   url: '/WAMantenimientoBD/ListarAlumnos',
+                   async: false,
+                   cache: false,
+                   dataType: 'json',
+                   success: function (data, textStatus, jqXHR) {
+                       //alert(data);  
+                       $("#tblAlumnos > tbody").html("");
+                       //var Procedencia ="";
+                       $.each(data, function(index, value){                           
+                           /*if(value.procedencia === "P"){
+                               Procedencia ="Particular";    
+                           }else{
+                               Procedencia ="Estatal";  
+                           } */                           
+                           $("#tblAlumnos > tbody").append("<tr>"+
+                                   "<td>"+value.idAlumno+"</td>"+
+                                   "<td>"+value.nomAlumno+"</td>"+
+                                   "<td>"+value.apeAlumno+"</td>"+
+                                   "<td>"+value.nomEspecialidad+"</td>"+
+                                   "<td>"+value.procedencia+"</td>"+
+                                   "<td><button type='button' data-idEspecialidad='"+value.idEspecialidad+"' data-Procedencia='"+value.procedencia+"' data-apeAlumno='"+value.apeAlumno+"' data-nomAlumno='"+value.nomAlumno+"' data-idAlumno='"+value.idAlumno+"' data-toggle='modal' class='btn btn-warning btnActualizar' >Edit</button></td>"+
+                                   "<td><button type='button' data-idAlumno='"+value.idAlumno+"' data-toggle='modal' class='btn btn-danger btnEliminar' >X</button></td>"+
+                                   "</tr>");
+                       });                       
+                   }
+               });                 
+            }
             function ListarEspecialidad(){
                 $.ajax({                        
                    type: 'post',                 
@@ -102,7 +151,6 @@
         </script>
         <title>Mantenimiento de Alumnos</title>
     </head>
-
     <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
           <a class="navbar-brand" href="Principal.jsp">WA-IDAT</a>

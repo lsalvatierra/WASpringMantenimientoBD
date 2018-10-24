@@ -36,26 +36,42 @@ public class AlumnoController {
     }
     
     @RequestMapping(value ="/ListarEspecialidad", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody List<Especialidad> Especialidad (){
+    public @ResponseBody List<Especialidad> ListaEspecialidades (){
         EspecialidadDAO objEspeDAO = new EspecialidadDAO();
         List<Especialidad> lstEspecialidad = objEspeDAO.ListarEspecialidad();        
         return lstEspecialidad;
     }
-    @RequestMapping(value ="/EliminarAlumno", method = RequestMethod.POST,  consumes = "application/json", produces = "application/json")
-    public @ResponseBody Boolean MantEliminarAlumno (@RequestBody  String IdAlumno){
-        MantAlumnoDAO objAlumnoDAO = new MantAlumnoDAO();        
-        Boolean rpta = objAlumnoDAO.EliminarAlumno(IdAlumno);
+    
+    @RequestMapping(value ="/ListarAlumnos", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<Alumno> ListaAlumnos (){
+        MantAlumnoDAO objAluDAO = new MantAlumnoDAO();
+        List<Alumno> lstAlumno = objAluDAO.ListarAlumnos();        
+        return lstAlumno;
+    }
+    
+    @RequestMapping(value ="/EliminarAlumno", method = RequestMethod.POST)
+    public @ResponseBody Boolean MantEliminarAlumno (@RequestBody  String objJson){
+        MantAlumnoDAO objAlumnoDAO = new MantAlumnoDAO();  
+        Alumno objAlumno = new Gson().fromJson(objJson, Alumno.class);
+        Boolean rpta = objAlumnoDAO.EliminarAlumno(objAlumno.getIdAlumno());
         return rpta;
     }    
     
     @RequestMapping(value ="/RegistrarAlumno", method = RequestMethod.POST)
-    public @ResponseBody Boolean MantRegistrarAlumno (@RequestParam(value = "ApeAlumno", required = true) String ApeAlumno, @RequestParam(value = "NomAlumno", required = true) String NomAlumno, @RequestParam(value = "IdEspecialidad", required = true) String IdEspecialidad, @RequestParam(value = "Procedencia", required = true) String Procedencia){
+    public @ResponseBody Boolean MantRegistrarAlumno (@RequestBody  String objJson){
         MantAlumnoDAO objAlumnoDAO = new MantAlumnoDAO();   
-        Alumno objAlumno = new Alumno("", ApeAlumno, NomAlumno, IdEspecialidad, Procedencia);
+        Alumno objAlumno = new Gson().fromJson(objJson, Alumno.class);
         Boolean rpta = objAlumnoDAO.RegistrarAlumno(objAlumno);
         return rpta;
     }
     
+        @RequestMapping(value ="/ModificarAlumno", method = RequestMethod.POST)
+    public @ResponseBody Boolean MantModificarAlumno (@RequestBody  String objJson){
+        MantAlumnoDAO objAlumnoDAO = new MantAlumnoDAO();   
+        Alumno objAlumno = new Gson().fromJson(objJson, Alumno.class);
+        Boolean rpta = objAlumnoDAO.ModificarAlumno(objAlumno);
+        return rpta;
+    }
     
     
     @RequestMapping(value="/json", method=RequestMethod.GET, produces = "application/json")
