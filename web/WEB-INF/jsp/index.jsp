@@ -17,7 +17,7 @@
         <script type="text/javascript">            
             $(document).ready(function(){
                 $("#btnAgregar").on("click", function(){
-                    ListarEspecialidad();
+                    ListarEspecialidad();                    
                     $("#txtCodigo").val("");
                     $("#txtNombre").val("");
                     $("#txtApellido").val(""); 
@@ -34,9 +34,9 @@
                     $("#ddlEspecialidad").val($(this).attr("data-idEspecialidad"));
                     $('#modalAlumno').modal('show');                    
                 });
-                $("#btnRegistrarDatos").on("click", function(){
+                
+                 $("#btnRegistrarDatos").on("click", function(){
                     if($("#txtCodigo").val() === ""){
-                        //alert("agregar");
                         $.ajax({                        
                             type: 'post',
                             contentType: "application/json",
@@ -82,6 +82,7 @@
                     }
                     $('#modalAlumno').modal('hide');
                 });
+                
                 $(".btnEliminar").live("click", function(){
                     //alert($(this).attr("data-idAlumno"));
                     $.ajax({                        
@@ -102,6 +103,24 @@
                         });
                     });
             });
+
+            function ListarEspecialidad(){
+                $.ajax({                        
+                   type: 'post',                 
+                   url: '/WAMantenimientoBD/ListarEspecialidad',
+                   async: false,
+                   cache: false,
+                   dataType: 'json',
+                   success: function (data, textStatus, jqXHR) {     
+                       $("#ddlEspecialidad").html("");
+                       $("#ddlEspecialidad").append("<option value='0'>Seleccione</option>");
+                       $.each(data, function(index, value){                           
+                           $("#ddlEspecialidad").append("<option value='"+value.idEspecialidad+"'>"+value.nomEspecialidad+"</option>");
+                       });                       
+                   }
+               });                 
+            }
+            
             function ListarAlumnos(){
                 $.ajax({                        
                    type: 'get',                 
@@ -132,22 +151,6 @@
                    }
                });                 
             }
-            function ListarEspecialidad(){
-                $.ajax({                        
-                   type: 'post',                 
-                   url: '/WAMantenimientoBD/ListarEspecialidad',
-                   async: false,
-                   cache: false,
-                   dataType: 'json',
-                   success: function (data, textStatus, jqXHR) {     
-                       $("#ddlEspecialidad").html("");
-                       $("#ddlEspecialidad").append("<option value='0'>Seleccione</option>");
-                       $.each(data, function(index, value){                           
-                           $("#ddlEspecialidad").append("<option value='"+value.idEspecialidad+"'>"+value.nomEspecialidad+"</option>");
-                       });                       
-                   }
-               });                 
-            }            
         </script>
         <title>Mantenimiento de Alumnos</title>
     </head>
@@ -188,8 +191,13 @@
                         <td><c:out value="${alumno.getApeAlumno()}" ></c:out></td>
                         <td><c:out value="${alumno.getNomEspecialidad()}" ></c:out></td>
                         <td><c:out value="${alumno.getProcedencia()}" ></c:out></td>
-                        <td><button type='button' data-idEspecialidad='${alumno.getIdEspecialidad()}' data-Procedencia='${alumno.getProcedencia()}' data-apeAlumno='${alumno.getApeAlumno()}' data-nomAlumno='${alumno.getNomAlumno()}' data-idAlumno='${alumno.getIdAlumno()}' data-toggle='modal' class='btn btn-warning btnActualizar' >Edit</button></td>
-                        <td><button type='button' data-idAlumno='${alumno.getIdAlumno()}' data-toggle='modal' class='btn btn-danger btnEliminar' >X</button></td>
+                        <td><button type='button' data-idEspecialidad='${alumno.getIdEspecialidad()}' 
+data-Procedencia='${alumno.getProcedencia()}' data-apeAlumno='${alumno.getApeAlumno
+()}' data-nomAlumno='${alumno.getNomAlumno()}' data-idAlumno='${alumno.getIdAlumno
+()}' data-toggle='modal' class='btn btn-warning btnActualizar' >Edit</button></td>
+                        <td><button type='button' data-
+idAlumno='${alumno.getIdAlumno()}' data-toggle='modal' class='btn btn-danger 
+btnEliminar' >X</button></td>
                     </tr>                    
                 </c:forEach>
                 </tbody>
